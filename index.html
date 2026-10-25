@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101828">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="生物連連看">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <meta name="description" content="原創生物連連看，支援桌機與手機。">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>生物連連看</title>
+</head>
+<body>
+  <main id="app" class="app-shell">
+    <section id="home-screen" class="screen home-screen" aria-labelledby="game-title">
+      <div class="home-glow glow-one"></div><div class="home-glow glow-two"></div>
+      <div class="home-content">
+        <div class="brand-mark" aria-hidden="true"><span class="brand-ball"><i></i></span></div>
+        <p class="eyebrow">POKÉMON LINK PUZZLE</p>
+        <h1 id="game-title">生物<br><span>連連看</span></h1>
+        <p class="home-copy">找出相同的生物，沿著不超過兩個轉彎的路徑連起來。</p>
+        <div class="home-stats">
+          <div><span class="stat-value">18 × 12</span><span class="stat-label">固定盤面</span></div>
+          <div><span class="stat-value">13</span><span class="stat-label">挑戰關卡</span></div>
+          <div><span class="stat-value">108</span><span class="stat-label">配對組數</span></div>
+        </div>
+        <button id="play-button" class="primary-button"><span>開始冒險</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+        <button id="install-button" class="secondary-button install-button" type="button">安裝到裝置</button>
+        <p id="saved-progress" class="saved-progress"></p>
+        <button id="leaderboard-button" class="leaderboard-button"><span aria-hidden="true">🏆</span> 查看本機前十名</button>
+        <div class="how-to"><span class="how-icon">⌁</span><span>點選相同圖塊連線，最多轉彎兩次<br>提示會標示可連線組；配對有機率獲得時間、洗牌或提示獎勵</span></div>
+      </div>
+      <footer class="home-footer">私人遊玩原型 <span>·</span> 圖片素材：PokéAPI Sprites</footer>
+    </section>
+
+    <section id="game-screen" class="screen game-screen hidden" aria-label="連連看遊戲">
+      <header class="game-header">
+        <div class="level-block"><span class="eyebrow">CREATURE LINK PUZZLE</span><strong id="level-title">第 1 關</strong><span class="stage-meta"><span id="species-count">生物 10 種</span><span class="meta-dot">·</span><span id="motion-label">固定位置</span></span></div>
+        <div class="header-pills">
+          <div class="pill timer-pill" id="timer-pill"><span class="pill-icon">◷</span><span id="timer-value">05:00</span></div>
+          <div class="pill progress-pill"><span class="pill-icon">◇</span><span><b id="remaining-value">108</b><small> 組剩餘</small></span></div>
+          <div class="pill score-pill"><span class="pill-icon">★</span><span><b id="score-value">0</b><small> 分</small></span></div>
+        </div>
+        <div class="game-actions">
+          <button id="hint-button" class="secondary-button"><span class="action-icon">✦</span>提示<span id="hint-count" class="action-count">5</span></button>
+          <button id="shuffle-button" class="secondary-button"><span class="action-icon shuffle-icon">⤨</span>洗牌<span id="shuffle-count" class="action-count">5</span></button>
+        </div>
+        <button id="pause-button" class="icon-button pause-button" aria-label="暫停遊戲" title="暫停遊戲">Ⅱ</button>
+      </header>
+      <section class="board-wrap" aria-label="生物牌盤">
+        <div id="board" class="board" role="grid" aria-label="18 欄、12 列牌盤"></div>
+        <svg id="path-overlay" class="path-overlay" aria-hidden="true"></svg>
+        <div id="board-message" class="board-message hidden" role="status"></div>
+        <div id="pause-overlay" class="pause-overlay hidden" role="dialog" aria-label="遊戲已暫停">
+          <div class="pause-card"><span class="pause-symbol" aria-hidden="true">Ⅱ</span><b>遊戲已暫停</b><small>計時與操作已暫停</small><button id="resume-button" class="primary-button">繼續遊戲</button><button id="home-button" class="secondary-button pause-home-button">結算並回首頁</button></div>
+        </div>
+        <div class="rotate-notice" role="status"><span aria-hidden="true">▱</span><b>請將手機轉為橫向</b><small>18 × 12 盤面需要橫向操作</small></div>
+      </section>
+    </section>
+  </main>
+
+  <dialog id="result-dialog" class="result-dialog">
+    <div class="dialog-art" id="dialog-art"><span class="dialog-ball"><i></i></span></div>
+    <p id="dialog-eyebrow" class="eyebrow">STAGE CLEAR</p>
+    <h2 id="dialog-title">關卡完成！</h2>
+    <p id="dialog-copy" class="dialog-copy"></p>
+    <div id="dialog-score-breakdown" class="score-breakdown"></div>
+    <div id="dialog-stats" class="dialog-stats"></div>
+    <div class="dialog-actions"><button id="dialog-primary" class="primary-button">下一關 <span class="button-arrow">↗</span></button><button id="dialog-secondary" class="secondary-button">回到首頁</button></div>
+  </dialog>
+
+  <dialog id="leaderboard-dialog" class="leaderboard-dialog">
+    <p class="eyebrow">LOCAL LEADERBOARD</p>
+    <h2>本機排行榜</h2>
+    <p class="leaderboard-caption">只保存在這台裝置，依累積總分排列</p>
+    <ol id="leaderboard-list" class="leaderboard-list"></ol>
+    <button id="leaderboard-close" class="secondary-button">返回</button>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="game.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

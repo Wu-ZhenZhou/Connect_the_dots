@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "生物連連看",
+  "short_name": "生物連連看",
+  "description": "原創生物連連看，支援 18×12 盤面",
+  "lang": "zh-Hant",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "landscape",
+  "background_color": "#101828",
+  "theme_color": "#101828",
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

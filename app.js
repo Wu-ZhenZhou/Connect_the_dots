@@ -24,6 +24,7 @@
   let tickHandle = null;
   let toastHandle = null;
   let messageHandle = null;
+  const mismatchTimers = new WeakMap();
   let installPrompt = null;
 
   function readSave() {
@@ -169,29 +170,21 @@
     if (state.board[first] === state.board[second]) {
       const path = G.findConnection(state.board, first, second);
       if (path) {
-        state.locked = true;
-        showPath(path);
-        tileAt(first).classList.add('tile-matched');
-        tileAt(second).classList.add('tile-matched');
-        window.setTimeout(() => {
-          if (!state) return;
-          state.board[first] = state.board[second] = null;
-          state.remaining--;
-          state.moves++;
-          state.levelScore += G.POINTS_PER_PAIR;
-          state.runScore += G.POINTS_PER_PAIR;
-          awardReward();
-          state.board = G.applyMotion(state.board, state.level);
-          state.selected = null;
-          state.locked = false;
-          drawBoard();
-          clearPath();
-          if (state.remaining === 0) endLevel(true);
-          else if (!G.hasAnyMove(state.board)) {
-            if (state.shuffles > 0) useShuffle(true);
-            else endLevel(false, 'no-moves');
-          }
-        }, 230);
+        state.board[first] = state.board[second] = null;
+        state.remaining--;
+        state.moves++;
+        state.levelScore += G.POINTS_PER_PAIR;
+        state.runScore += G.POINTS_PER_PAIR;
+        awardReward();
+        state.board = G.applyMotion(state.board, state.level);
+        state.selected = null;
+        drawBoard();
+        clearPath();
+        if (state.remaining === 0) endLevel(true);
+        else if (!G.hasAnyMove(state.board)) {
+          if (state.shuffles > 0) useShuffle(true);
+          else endLevel(false, 'no-moves');
+        }
       } else {
         mismatch(first, second, '路徑被擋住了');
       }
@@ -204,11 +197,22 @@
     const old = tileAt(first);
     old && old.classList.remove('tile-selected');
     const next = tileAt(second);
-    next && next.classList.add('tile-selected', 'tile-wrong');
+    if (next) {
+      const previousTimer = mismatchTimers.get(next);
+      if (previousTimer) window.clearTimeout(previousTimer);
+      next.classList.add('tile-selected', 'tile-wrong');
+    }
     showToast(text);
-    window.setTimeout(() => next && next.classList.remove('tile-selected', 'tile-wrong'), 380);
     state.selected = null;
     clearPath();
+    if (next) {
+      const timer = window.setTimeout(() => {
+        mismatchTimers.delete(next);
+        next.classList.remove('tile-wrong');
+        if (!next.isConnected || !state || state.selected !== second) next.classList.remove('tile-selected');
+      }, 380);
+      mismatchTimers.set(next, timer);
+    }
   }
 
   function showPath(path) {

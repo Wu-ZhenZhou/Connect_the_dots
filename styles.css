@@ -64,3 +64,24 @@
   .board-wrap{min-height:0;padding:0;overflow:hidden}
   .board{width:min(100%,calc((100dvh - 54px)*1.5));height:auto;max-height:100%;aspect-ratio:3/2}
 }
+
+/* Reflow the home screen into two columns on short landscape screens. */
+@media (max-width:900px) and (max-height:550px) and (orientation:landscape){
+  .home-screen{overflow-x:hidden;overflow-y:auto;place-items:center}
+  .home-content{width:min(820px,96vw);padding:8px 0 20px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"brand stats" "eyebrow play" "title install" "copy saved" "howto leaderboard";align-items:center;align-content:center;gap:4px 22px}
+  .home-content>.brand-mark{grid-area:brand;height:30px;margin:0}
+  .home-content>.eyebrow{grid-area:eyebrow;font-size:8px;margin:0;letter-spacing:.14em}
+  .home-content>h1{grid-area:title;font-size:clamp(30px,5.5vw,42px);line-height:.94;letter-spacing:-.04em}
+  .home-content>.home-copy{grid-area:copy;max-width:360px;margin:0 auto;font-size:10px;line-height:1.45}
+  .home-content>.home-stats{grid-area:stats;gap:clamp(12px,3vw,28px);margin:0 auto}
+  .home-content>.primary-button{grid-area:play;width:100%;min-height:38px;padding:0 14px;font-size:12px}
+  .home-content>#install-button{grid-area:install;min-height:34px;margin:0;padding:0 12px}
+  .home-content>.saved-progress{grid-area:saved;height:auto;min-height:12px;margin:0;font-size:9px}
+  .home-content>#leaderboard-button{grid-area:leaderboard;margin:0;padding:6px 8px;font-size:9px}
+  .home-content>.how-to{grid-area:howto;gap:5px;font-size:9px;line-height:1.35}
+  .home-content .how-icon{width:23px;height:23px;border-radius:7px;font-size:17px;flex:none}
+  .brand-mark .brand-ball{width:30px;height:30px;border-width:2px}
+  .brand-mark .brand-ball:after{width:8px;height:8px;border-width:2px}
+  .brand-mark .brand-ball i{inset:13px -2px auto;height:2px}
+  .home-footer{display:none}
+}

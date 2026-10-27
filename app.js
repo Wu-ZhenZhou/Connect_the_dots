@@ -24,6 +24,8 @@
   let tickHandle = null;
   let toastHandle = null;
   let messageHandle = null;
+  let pathHandle = null;
+  let pathRevision = 0;
   const mismatchTimers = new WeakMap();
   let installPrompt = null;
 
@@ -176,6 +178,7 @@
 
   function onTile(index) {
     if (!state || state.locked || state.paused || state.board[index] == null) return;
+    clearPath();
     clearHint();
     if (state.selected === index) {
       tileAt(index).classList.remove('tile-selected');
@@ -193,6 +196,7 @@
     if (state.board[first] === state.board[second]) {
       const path = G.findConnection(state.board, first, second);
       if (path) {
+        showPath(path, 160);
         state.board[first] = state.board[second] = null;
         state.remaining--;
         state.moves++;
@@ -202,7 +206,6 @@
         state.board = G.applyMotion(state.board, state.level);
         state.selected = null;
         drawBoard();
-        clearPath();
         if (state.remaining === 0) endLevel(true);
         else if (!G.hasAnyMove(state.board)) {
           if (state.shuffles > 0) useShuffle(true);
@@ -238,7 +241,9 @@
     }
   }
 
-  function showPath(path) {
+  function showPath(path, duration = 0) {
+    clearPath();
+    const revision = pathRevision;
     const overlayRect = els.overlay.getBoundingClientRect();
     const columnCenters = Array.from({ length: G.COLS }, (_, x) => {
       const cellRect = tileAt(x).getBoundingClientRect();
@@ -259,10 +264,21 @@
     const points = path.map(point => `${xAt(point.x)},${yAt(point.y)}`).join(' ');
     els.overlay.innerHTML = `<polyline points="${points}" class="connection-line"/><polyline points="${points}" class="connection-glow"/>`;
     els.overlay.classList.add('path-visible');
+    if (duration > 0) {
+      pathHandle = window.setTimeout(() => {
+        if (revision === pathRevision) clearPath();
+      }, duration);
+    }
   }
 
   function inside(point) { return point.x >= 0 && point.x < G.COLS && point.y >= 0 && point.y < G.ROWS; }
-  function clearPath() { els.overlay.classList.remove('path-visible'); els.overlay.replaceChildren(); }
+  function clearPath() {
+    pathRevision++;
+    window.clearTimeout(pathHandle);
+    pathHandle = null;
+    els.overlay.classList.remove('path-visible');
+    els.overlay.replaceChildren();
+  }
 
   function clearHint() {
     if (state && state.hint) {

@@ -122,30 +122,53 @@
   });
 
   function drawBoard() {
-    const frag = document.createDocumentFragment();
+    if (els.board.children.length !== state.board.length) {
+      const frag = document.createDocumentFragment();
+      state.board.forEach((_, index) => {
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.setAttribute('role', 'gridcell');
+        cell.dataset.index = index;
+        cell.addEventListener('click', () => onTile(index));
+        frag.appendChild(cell);
+      });
+      els.board.replaceChildren(frag);
+    }
+
     state.board.forEach((kind, index) => {
-      const cell = document.createElement('button');
+      const cell = els.board.children[index];
       cell.className = `tile${kind == null ? ' tile-empty' : ''}`;
-      cell.type = 'button';
-      cell.setAttribute('role', 'gridcell');
-      cell.dataset.index = index;
-      if (kind != null) {
-        cell.setAttribute('aria-label', CREATURE_NAMES[kind - 1] || `生物 ${kind}`);
-        const img = document.createElement('img');
-        img.src = CREATURE_SPRITE(kind);
+      cell.disabled = kind == null;
+      if (kind == null) {
+        cell.setAttribute('aria-label', '空格');
+        cell.querySelector('img')?.remove();
+        delete cell.dataset.kind;
+        delete cell.dataset.fallback;
+        return;
+      }
+
+      const kindId = String(kind);
+      cell.setAttribute('aria-label', CREATURE_NAMES[kind - 1] || `生物 ${kind}`);
+      let img = cell.querySelector('img');
+      const needsImage = !img;
+      if (needsImage) {
+        img = document.createElement('img');
         img.alt = '';
         img.loading = 'lazy';
         img.draggable = false;
-        img.onerror = () => { img.remove(); cell.classList.add('sprite-missing'); cell.dataset.fallback = '✦'; };
         cell.appendChild(img);
-      } else {
-        cell.disabled = true;
-        cell.setAttribute('aria-label', '空格');
       }
-      cell.addEventListener('click', () => onTile(index));
-      frag.appendChild(cell);
+      if (needsImage || cell.dataset.kind !== kindId) {
+        cell.dataset.kind = kindId;
+        img.onerror = () => {
+          if (!img.isConnected || cell.dataset.kind !== kindId) return;
+          img.remove();
+          cell.classList.add('sprite-missing');
+          cell.dataset.fallback = '✦';
+        };
+        img.src = CREATURE_SPRITE(kind);
+      }
     });
-    els.board.replaceChildren(frag);
     updateHeader();
   }
 

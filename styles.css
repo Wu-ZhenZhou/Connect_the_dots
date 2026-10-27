@@ -58,13 +58,6 @@
 .install-button{display:flex;min-height:39px;margin:0 auto 10px;padding:0 20px;border-radius:10px;font-size:11px}
 .install-button:disabled{opacity:.65}
 
-/* Keep the complete 18×12 board inside short mobile landscape viewports. */
-@media (max-width:900px) and (orientation:landscape){
-  .game-screen{height:100dvh;padding:max(4px,env(safe-area-inset-top)) 6px max(4px,env(safe-area-inset-bottom));gap:4px;grid-template-rows:38px minmax(0,1fr)}
-  .board-wrap{min-height:0;padding:0;overflow:hidden}
-  .board{width:min(100%,calc((100dvh - 54px)*1.5));height:auto;max-height:100%;aspect-ratio:3/2}
-}
-
 /* Reflow the home screen into two columns on short landscape screens. */
 @media (max-height:600px) and (orientation:landscape){
   .home-screen{height:100dvh;min-height:100dvh;overflow-x:hidden;overflow-y:auto;place-items:start center}
@@ -84,4 +77,31 @@
   .brand-mark .brand-ball:after{width:8px;height:8px;border-width:2px}
   .brand-mark .brand-ball i{inset:13px -2px auto;height:2px}
   .home-footer{display:none}
+}
+
+/* Base the compact layout on available height, regardless of device width. */
+@media (max-height:700px){
+  .home-screen{height:100dvh;min-height:100dvh;overflow-x:hidden;overflow-y:auto;place-items:start center}
+  .home-content{margin:auto;padding:clamp(12px,3dvh,22px) 0 36px}
+  .brand-mark{height:42px;margin-bottom:7px}
+  .brand-mark .brand-ball{width:38px;height:38px}
+  .brand-mark .brand-ball:after{width:9px;height:9px}
+  .brand-mark .brand-ball i{inset:16px -2px auto}
+  .home-content .eyebrow{margin-bottom:6px}
+  .home-content h1{font-size:clamp(40px,8dvh,54px);line-height:.98}
+  .home-copy{margin:8px auto 12px;font-size:12px;line-height:1.55}
+  .home-stats{gap:clamp(18px,5vw,30px);margin-bottom:12px}
+  .home-content>.primary-button{min-height:44px}
+  .install-button{min-height:34px;margin:0 auto 6px}
+  .saved-progress{height:auto;min-height:12px;margin:4px 0 8px}
+  .leaderboard-button{margin:0 auto 8px}
+  .how-to{font-size:10px;line-height:1.4}
+  .home-footer{bottom:max(6px,env(safe-area-inset-bottom))}
+}
+
+/* Fit the game to every short viewport, not only narrow landscape phones. */
+@media (max-height:600px){
+  .game-screen{height:100dvh;min-height:100dvh;padding:max(4px,env(safe-area-inset-top)) 6px max(4px,env(safe-area-inset-bottom));gap:4px;grid-template-rows:38px minmax(0,1fr)}
+  .board-wrap{min-height:0;padding:0;overflow:hidden}
+  .board{width:min(100%,calc((100dvh - 54px)*1.5));height:auto;max-height:100%;aspect-ratio:3/2}
 }

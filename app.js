@@ -12,7 +12,7 @@
   };
 
   const SAVE_KEY = 'pokemon-link-prototype-v1';
-  const CREATURE_SPRITE = id => `./assets/creatures/${String(id).padStart(2, '0')}.jpeg`;
+  const CREATURE_SPRITE = id => `./assets/creatures/${String(id).padStart(2, '0')}.png`;
   const CREATURE_NAMES = [
     '炭芽', '泡泡鰭', '苔團', '電栗', '霧鈴', '岩豆', '月絨', '糖盔', '泡泥', '葉哨',
     '熔角', '霜團', '磁豆', '砂面', '星翎', '夜蕈', '潮牙', '藤拳', '焰鬃', '雷翅',

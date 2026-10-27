@@ -1,5 +1,5 @@
-const CACHE = 'creature-link-prototype-v15';
-const CREATURES = Array.from({ length: 34 }, (_, index) => `./assets/creatures/${String(index + 1).padStart(2, '0')}.jpeg`);
+const CACHE = 'creature-link-prototype-v16';
+const CREATURES = Array.from({ length: 34 }, (_, index) => `./assets/creatures/${String(index + 1).padStart(2, '0')}.png`);
 const CORE = ['./', './index.html', './styles.css', './game.js', './app.js', './manifest.webmanifest', './assets/icon.svg', './assets/icon-192.png', './assets/icon-512.png', './assets/icon-512-maskable.png', ...CREATURES];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting())));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())));

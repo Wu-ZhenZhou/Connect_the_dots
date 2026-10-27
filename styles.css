@@ -57,3 +57,10 @@
 
 .install-button{display:flex;min-height:39px;margin:0 auto 10px;padding:0 20px;border-radius:10px;font-size:11px}
 .install-button:disabled{opacity:.65}
+
+/* Keep the complete 18×12 board inside short mobile landscape viewports. */
+@media (max-width:900px) and (orientation:landscape){
+  .game-screen{height:100dvh;padding:max(4px,env(safe-area-inset-top)) 6px max(4px,env(safe-area-inset-bottom));gap:4px;grid-template-rows:38px minmax(0,1fr)}
+  .board-wrap{min-height:0;padding:0;overflow:hidden}
+  .board{width:min(100%,calc((100dvh - 54px)*1.5));height:auto;max-height:100%;aspect-ratio:3/2}
+}
